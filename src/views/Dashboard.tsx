@@ -1,7 +1,8 @@
 import { observer } from "mobx-react-lite"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import ConfirmDelete from "../components/ConfirmDelete"
 import EditDataModal from "../components/EditDataModal"
+import useStores from "../hooks/useStores"
 
 const Dashboard = observer(() => {
   const [showModal, setShowModal] = useState(false)
@@ -9,6 +10,18 @@ const Dashboard = observer(() => {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [deleteId, setDeleteId] = useState(null)
   const [deleteName, setDeleteName] = useState("")
+  const [tableData, setTableData] = useState({})
+  const { userStore } = useStores()
+
+  useEffect(() => {
+    getUserList()
+  }, [])
+
+  const getUserList = async () => {
+    const result = await userStore.getList()
+
+    setTableData(result)
+  }
 
   return (
     <div>
@@ -34,46 +47,51 @@ const Dashboard = observer(() => {
             </tr>
           </thead>
           <tbody>
-            {}
-            <tr className="border-b bg-gray-900 border-gray-700">
-              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                Apple MacBook Pro 17"
-              </th>
-              <td className="px-6 py-4">
-                Sliver
-              </td>
-              <td className="px-6 py-4">
-                Laptop
-              </td>
-              <td className="px-6 py-4">
-                $2999
-              </td>
-              <td className="px-6 py-4">
-                <button
-                  className="py-2 px-2 bg-yellow-300 rounded-lg text-white"
-                  onClick={() => {
-                    setShowModal(!showModal)
-                  }}
-                >
-                  editar
-                </button>
-                <button
-                  className="py-2 px-2 bg-red-300 rounded-lg text-white"
-                  onClick={() => {
-                    setConfirmDelete(!confirmDelete)
-                  }}
-                >
-                  deletar
-                </button>
-              </td>
-            </tr>
+            {Array.isArray(tableData) && tableData.map((item) => (
+              <tr key={item.id} className="border-b bg-gray-500 border-gray-700 text-white">
+                <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-white">
+                  {item.name ?? ""}
+                </th>
+                <td className="px-6 py-4">
+                  {String(item.cpf) ?? ""}
+                </td>
+                <td className="px-6 py-4">
+                  {item.email ?? ""}
+                </td>
+                <td className="px-6 py-4">
+                  {String(item.salary) ?? ""}
+                </td>
+                <td className="px-6 py-4">
+                  <button
+                    className="py-2 px-2 bg-yellow-300 rounded-lg text-white"
+                    onClick={() => {
+                      setShowModal(!showModal)
+                      setTargetId(item.id)
+                    }}
+                  >
+                    editar
+                  </button>
+                  <button
+                    className="py-2 px-2 bg-red-300 rounded-lg text-white"
+                    onClick={() => {
+                      setConfirmDelete(!confirmDelete)
+                    }}
+                  >
+                    deletar
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
       {
         showModal ? (
           <EditDataModal
-            onClose={() => setShowModal(!showModal)}
+            onClose={() => {
+              setShowModal(!showModal)
+              setTargetId(null)
+            }}
             id={targetId}
           />
         ) : null
@@ -81,7 +99,10 @@ const Dashboard = observer(() => {
       {
         confirmDelete ? (
           <ConfirmDelete
-            onClose={() => setConfirmDelete(!confirmDelete)}
+            onClose={() => {
+              setConfirmDelete(!confirmDelete)
+              setDeleteId(null)
+            }}
             id={deleteId}
             name={deleteName}
           />

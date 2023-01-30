@@ -1,12 +1,12 @@
-import { FormStore } from "./FormStore";
+import { UserStore } from "./UserStore";
 import { NofityStore } from "./NofityStore";
 
 export class RootStore {
   notifyStore: NofityStore
-  formStore: FormStore
+  userStore: UserStore
 
   constructor() {
     this.notifyStore = new NofityStore(this)
-    this.formStore = new FormStore(this)
+    this.userStore = new UserStore(this)
   }
 }

@@ -14,7 +14,7 @@ const INITIAL_FORM_STATE = {
 
 const Formulario = observer(() => {
   const [formState, setFormState] = useState(INITIAL_FORM_STATE)
-  const { formStore } = useStores()
+  const { userStore } = useStores()
   const navigate = useNavigate()
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -82,7 +82,7 @@ const Formulario = observer(() => {
         <button
           type="button"
           className="bg-white uppercase text-black rounded-md w-full py-2"
-          onClick={async () => await formStore.newRegister(formState, navigate)}
+          onClick={async () => await userStore.newRegister(formState, navigate)}
         >
           enviar
         </button>
