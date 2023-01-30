@@ -22,7 +22,7 @@ const TextFild = ({ title, error, errorMessage, value, onChange, name, type = "t
         name={name}
         value={value}
         onChange={onChange}
-        className="w-full flex py-2 px-4 rounded-md"
+        className="w-full flex py-2 px-4 rounded-md text-black"
         autoComplete={autoComplete}
       />
       {

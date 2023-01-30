@@ -27,9 +27,14 @@ export class FormStore {
     } else if (formData.salary < -1) {
       return this.rootStore.notifyStore.danger("salario nao pode ser menor que zero")
     }
+    console.log(formData)
+    const form = {
+      ...formData,
+      salary: Number(formData.salary)
+    }
 
     try {
-      const { data } = await api.post("/register", formData)
+      const { data } = await api.post("/v1/register", form)
 
       this.rootStore.notifyStore.success(data.message)
       navigate("/dashboard")
