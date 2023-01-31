@@ -75,6 +75,8 @@ const Dashboard = observer(() => {
                     className="py-2 px-2 bg-red-300 rounded-lg text-white"
                     onClick={() => {
                       setConfirmDelete(!confirmDelete)
+                      setDeleteName(item.name)
+                      setDeleteId(item.id)
                     }}
                   >
                     deletar
@@ -88,7 +90,8 @@ const Dashboard = observer(() => {
       {
         showModal ? (
           <EditDataModal
-            onClose={() => {
+            onClose={async () => {
+              await getUserList()
               setShowModal(!showModal)
               setTargetId(null)
             }}
@@ -99,7 +102,8 @@ const Dashboard = observer(() => {
       {
         confirmDelete ? (
           <ConfirmDelete
-            onClose={() => {
+            onClose={async () => {
+              await getUserList()
               setConfirmDelete(!confirmDelete)
               setDeleteId(null)
             }}

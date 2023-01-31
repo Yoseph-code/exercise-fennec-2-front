@@ -13,6 +13,7 @@ export type NewRegisterProps = {
 
 export class UserStore {
   private rootStore: RootStore
+  public onLoading = false
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this)
@@ -43,6 +44,31 @@ export class UserStore {
     }
   }
 
+  async editUser(id: string, formData: NewRegisterProps) {
+    if (formData.name.length < 6) {
+      return this.rootStore.notifyStore.danger("nome invalido")
+    } else if (formData.email.length < 6) {
+      return this.rootStore.notifyStore.danger("email invalido")
+    } else if (formData.salary < -1) {
+      return this.rootStore.notifyStore.danger("salario nao pode ser menor que zero")
+    }
+
+    const form = {
+      ...formData,
+      salary: Number(formData.salary)
+    }
+
+    this.onLoading = true
+    try {
+      const { data } = await api.put(`/v1/user/${id}`, form)
+
+      this.rootStore.notifyStore.success(data.message)
+    } catch (err: any) {
+      this.rootStore.notifyStore.danger(err.response.data.message)
+    }
+    this.onLoading = false
+  }
+
   async getList(page: number = 0, size: number = 10, keyword: string = "") {
     try {
       const { data } = await api.get(`/v1/user?page=${page}&size=${size}&keyword=${keyword}`)
@@ -62,5 +88,17 @@ export class UserStore {
     } catch (err: any) {
       this.rootStore.notifyStore.danger(err.response.data.message)
     }
+  }
+
+  async deleteUser(id: string) {
+    this.onLoading = true
+    try {
+      const { data } = await api.delete(`/v1/user/${id}`)
+
+      this.rootStore.notifyStore.success(data.message)
+    } catch (err: any) {
+      this.rootStore.notifyStore.danger(err.response.data.message)
+    }
+    this.onLoading = false
   }
 }
