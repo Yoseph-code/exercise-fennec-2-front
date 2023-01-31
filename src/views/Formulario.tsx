@@ -51,7 +51,7 @@ const Formulario = observer(() => {
         <TextFild
           title="CPF"
           name="cpf"
-          value={formState.cpf}
+          value={formState.cpf.replace(".", "")}
           onChange={onChange}
         />
         <div className="my-5" />
@@ -75,7 +75,7 @@ const Formulario = observer(() => {
         <TextFild
           title="Salario"
           name="salary"
-          value={formState.salary}
+          value={formState.salary.replace(",", ".")}
           onChange={onChange}
         />
         <div className="my-10" />
