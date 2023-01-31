@@ -12,5 +12,5 @@ Para iniciar com a aplicação, rode os seguintes comandos:
 ```
 
 ```shell
-  npm run start
+  npm run dev
 ```
